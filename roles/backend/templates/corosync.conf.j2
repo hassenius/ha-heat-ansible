@@ -12,7 +12,7 @@ totem {
   rrp_mode: none
   interface {
     ringnumber: 0
-    bindnetaddr: %NETWORK%
+    bindnetaddr: {{ ansible_eth0['ipv4']['network'] }}
     broadcast: yes
     mcastport: 5405
   }
