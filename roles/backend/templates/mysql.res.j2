@@ -1,0 +1,9 @@
+resource mysql {
+  device    minor 0;
+  disk      "/dev/data/mysql";
+  meta-disk internal;
+  {% for host in groups['backendservers'] %}
+    on {{ hostvars[host]['ansible_hostname'] }} {
+      address ipv4 {{hostvars[host]['ansible_eth0']['ipv4']['address']}}:7700;
+    }
+  {% endfor %}  
