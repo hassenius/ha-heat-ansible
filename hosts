@@ -1,0 +1,3 @@
+[backendservers]
+dbserver1 dbrole=master
+dbserver2 dbrole=slave

@@ -1,0 +1,41 @@
+---
+- name: Install core cluster packages
+  apt: name={{ item }} state=installed update_cache=yes
+  with_items:
+    - pacemaker 
+    - crmsh 
+    - corosync 
+    - cluster-glue 
+    - resource-agents
+    - drbd8-utils
+    - linux-server
+    
+- name: Restart server
+  command: shutdown -r now "Ansible triggered"
+  async: 0
+  poll: 0
+  ignore_errors: true
+
+- name: Wait for server to come back
+  local_action: 
+    module: wait_for 
+      host={{ inventory_hostname }} 
+      port=22
+      delay=1
+      timeout=300
+  sudo: false
+  
+- name: Copy the corosync configuration file
+  template: src=corosync.conf.j2 dest=/etc/corosync/corosync.conf
+  notify: 
+    - start corosync
+
+- name: Make sure pacemaker is started
+  service: name=pacemaker state=started enabled=yes
+  
+- name: Copy pacemaker properties
+  copy: src=pacemaker-properties.txt dest=/tmp/pacemaker-properties.txt
+  notify:
+    - apply pacemaker properties
+  when: dbrole == 'master'
+ 

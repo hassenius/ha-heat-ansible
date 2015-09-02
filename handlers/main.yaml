@@ -1,0 +1,5 @@
+---
+- name: start corosync
+  service: name=corosync state=restarted enabled=yes
+- name: apply pacemaker properties
+  command: crm -f /tmp/pacemaker-properties.txt
