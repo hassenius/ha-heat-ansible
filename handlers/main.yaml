@@ -1,5 +1,13 @@
 ---
-- name: start corosync
-  service: name=corosync state=restarted enabled=yes
+
+
 - name: apply pacemaker properties
   command: crm -f /tmp/pacemaker-properties.txt
+
+- name: Restart server
+  command: shutdown -r now "Ansible triggered"
+  async: 0
+  poll: 0
+  ignore_errors: true
+
+

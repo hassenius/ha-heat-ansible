@@ -9,26 +9,26 @@
     - resource-agents
     - drbd8-utils
     - linux-server
-    
-- name: Restart server
-  command: shutdown -r now "Ansible triggered"
-  async: 0
-  poll: 0
-  ignore_errors: true
+  notify:
+    - Restart server
 
 - name: Wait for server to come back
   local_action: 
     module: wait_for 
       host={{ inventory_hostname }} 
       port=22
-      delay=1
+      delay=2
       timeout=300
   sudo: false
-  
+    
 - name: Copy the corosync configuration file
   template: src=corosync.conf.j2 dest=/etc/corosync/corosync.conf
-  notify: 
-    - start corosync
+
+- name: Enable corosync
+  lineinfile: dest=/etc/default/corosync regexp=^START= line=START=yes
+
+- name: Start corosync
+  service: name=corosync state=restarted enabled=yes
 
 - name: Make sure pacemaker is started
   service: name=pacemaker state=started enabled=yes
