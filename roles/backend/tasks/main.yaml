@@ -33,6 +33,7 @@
   
 - name: Copy masters debian.cnf to slave
   copy: src=/tmp/debian.cnf dest=/etc/mysql/debian.cnf backup=yes
+  notify: Set mysql sys-maint-password on slave
   when: dbrole == 'slave' and mysql_debconf_done.stat.exists
 
 - name: Stop mysql cluster
