@@ -36,7 +36,7 @@
   when: dbrole == 'slave' and mysql_debconf_done.stat.exists
 
 - name: Set mysql sys-maint-password on slave
-  mysql_user: login_user=root host=localhost name={{ lookup('ini', 'user section=client file=/etc/mysql/debian.cnf') }} password={{ lookup('ini', 'password section=client file=/etc/mysql/debian.cnf') }} state=present priv=*.*:SHUTDOWN/mysql.user:SELECT
+  script: roles/backend/files/update-slave-mysql.sh
   when: dbrole == 'slave'
   
 - name: Stop mysql cluster
