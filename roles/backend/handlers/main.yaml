@@ -10,4 +10,8 @@
   poll: 0
   ignore_errors: true
 
+- name: Copy debian.cnf to slave
+  copy: src=/tmp/debian.conf dest=/etc/mysql/debian.cnf backup=yes
+  when: role=slave
+
 

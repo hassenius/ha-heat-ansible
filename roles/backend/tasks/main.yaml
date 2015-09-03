@@ -30,3 +30,11 @@
     
 - name: Generate wsrep config file
   template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf 
+  
+- name: Get masters debian.cnf file
+  fetch: dest=/tmp/debian.cnf src=/etc/mysql/debian.cnf flat=yes
+  notify: Copy debian.cnf to slave
+  when: dbrole=master
+  
+- name: 
+  
