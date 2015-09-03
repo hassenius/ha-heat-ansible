@@ -10,6 +10,5 @@
   poll: 0
   ignore_errors: true
 
-- name: Set mysql sys-maint-password on slave
-  mysql_user: login_user=root host=localhost name={{ lookup('ini', 'user section=client file=/etc/mysql/debian.cnf') }} password={{ lookup('ini', 'password section=client file=/etc/mysql/debian.cnf') }} state=present priv=*.*:SHUTDOWN/mysql.user:SELECT
+
   
