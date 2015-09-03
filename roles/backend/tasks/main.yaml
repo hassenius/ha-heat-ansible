@@ -30,11 +30,21 @@
     
 - name: Generate wsrep config file
   template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf 
+
+- name: Check if local debian.cnf file already exists
+  local_action: stat path=/tmp/debian.cnf
+  register: mysql_debconf_done
   
 - name: Get masters debian.cnf file
   fetch: dest=/tmp/debian.cnf src=/etc/mysql/debian.cnf flat=yes
   notify: Copy debian.cnf to slave
-  when: dbrole=master
+  when: dbrole == 'master' and not mysql_debconf_done.stat.exists
   
-- name: 
+- name: Copy masters debian.cnf to slave
+  copy: src=/tmp/debian.cnf dest=/etc/mysql/debian.cnf backup=yes
+  when: dbrole == 'slave' and mysql_debconf_done.stat.exists
+
+  
+
+  
   
