@@ -1,50 +1,21 @@
 ---
-- name: Install core cluster packages
-  apt: name={{ item }} state=installed update_cache=yes
+- name: Prepare system for adding repositories
+  apt: name=software-properties-common state-installed update_cache=yes
+
+- name: Add MariaDB repository key
+  apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db
+  
+- name: Add MariaDB repositories for Galera packages
+  apt_repository: repo='deb http://mariadb.mirror.nucleus.be//repo/5.5/ubuntu trusty main' state=present update_cache=yes
+
+- name: Install MariaDB and Galera
+  apt: name={{ item }} state=installed 
   with_items:
-    - pacemaker 
-    - crmsh 
-    - corosync 
-    - cluster-glue 
-    - resource-agents
-    - drbd8-utils
-    - linux-server
-  notify:
-    - Restart server
-
-- name: Wait for server to come back
-  local_action: 
-    module: wait_for 
-      host={{ inventory_hostname }} 
-      port=22
-      delay=2
-      timeout=300
-  sudo: false
+    - mariadb-galera-server 
+    - galera
     
-- name: Copy the corosync configuration file
-  template: src=corosync.conf.j2 dest=/etc/corosync/corosync.conf
+#- name: Configure MySQL
+#  copy: src=pacemaker-properties.txt dest=/tmp/pacemaker-properties.txt
 
-- name: Enable corosync
-  lineinfile: dest=/etc/default/corosync regexp=^START= line=START=yes
-
-- name: Start corosync
-  service: name=corosync state=restarted enabled=yes
-
-- name: Make sure pacemaker is started
-  service: name=pacemaker state=started enabled=yes
-  
-- name: Copy pacemaker properties
-  copy: src=pacemaker-properties.txt dest=/tmp/pacemaker-properties.txt
-  notify:
-    - apply pacemaker properties
-  when: dbrole == 'master'
- 
-- name: Build hosts file
-  lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item].ansible_default_ipv4.address }} {{hostvars[item].ansible_hostname}}" state=present
-  when: hostvars[item].ansible_default_ipv4.address is defined
-  with_items: groups['all']
-  
-- name: Configure drbd
-  template: src=mysql.res.j2 dest=/etc/drbd.d/mysql.res
   
   
