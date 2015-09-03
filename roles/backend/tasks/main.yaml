@@ -1,9 +1,11 @@
 ---
 - name: Prepare system for adding repositories
-  apt: name=software-properties-common state-installed update_cache=yes
+  apt: name=software-properties-common state=installed update_cache=yes
 
 - name: Add MariaDB repository key
-  apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db
+  # only valid after ansible 1.6 apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db
+  # complains: apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
+  command: apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
   
 - name: Add MariaDB repositories for Galera packages
   apt_repository: repo='deb http://mariadb.mirror.nucleus.be//repo/5.5/ubuntu trusty main' state=present update_cache=yes
@@ -12,10 +14,6 @@
   apt: name={{ item }} state=installed 
   with_items:
     - mariadb-galera-server 
-    - galera
+    - galera   
+  
     
-#- name: Configure MySQL
-#  copy: src=pacemaker-properties.txt dest=/tmp/pacemaker-properties.txt
-
-  
-  
