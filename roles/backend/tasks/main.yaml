@@ -16,20 +16,8 @@
     - mariadb-galera-server 
     - galera   
 
-- name: Update my.cnf file
-  ini_file: 
-    dest: /etc/mysql/my.cnf
-    section: mysqld
-    option: {{ item.option }}
-    value: {{ item.value }}
-    backup: yes
-  with_items:
-    - { option: 'query_cache_size', value: '0' }
-    - { option: 'binlog_format', value: 'ROW' }
-    - { option: 'default_storage_engine', value: 'InnoDB' }
-    - { option: 'innodb_autoinc_lock_mode', value: '2' }
-    - { option: 'innodb_doublewrite', value: '1' }
-    
+- name: Upload custom my.cnf settings
+  copy: src=my-custom.cnf dest=/etc/mysql/conf.d/my-custom.cnf
 
 - name: Generate wsrep config file
   template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf 
