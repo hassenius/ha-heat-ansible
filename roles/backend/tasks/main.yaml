@@ -44,7 +44,18 @@
   copy: src=/tmp/debian.cnf dest=/etc/mysql/debian.cnf backup=yes
   when: dbrole == 'slave' and mysql_debconf_done.stat.exists
 
+- name: Stop mysql cluster
+  service: name=mysql state=stopped
+
+- name: Start master node
+  service: name=mysql state=started args=--wsrep-new-cluster
+  when: dbrole == 'master'
   
+- name: Start slave node
+  service: name=mysql state=started
+  when: dbrole == 'slave'
+  
+
 
   
   
