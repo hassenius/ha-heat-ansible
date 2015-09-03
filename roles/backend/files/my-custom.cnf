@@ -1,3 +1,4 @@
+[mysqld]
 query_cache_size=0
 binlog_format=ROW
 default_storage_engine=innodb
