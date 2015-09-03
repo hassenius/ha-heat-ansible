@@ -15,5 +15,18 @@
   with_items:
     - mariadb-galera-server 
     - galera   
-  
+
+- name: Update my.conf file
+  lineinfile: 
+    dest: /etc/mysql/my.cnf 
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^query_cache_size=', line: 'query_cache_size=0' }
+    - { regexp: '^binlog_format=', line: 'binlog_format=ROW'}
+    - { regexp: '^default_storage_engine=', line: 'default_storage_engine=innodb'}
+    - { regexp: '^innodb_autoinc_lock_mode=', line: 'innodb_autoinc_lock_mode=2'}
+    - { regexp: '^innodb_doublewrite=', line: 'innodb_doublewrite=1'}
     
+- name: Generate wsrep config file
+  template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf 

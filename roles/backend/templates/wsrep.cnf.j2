@@ -1,0 +1,8 @@
+[mysqld]
+wsrep_provider=/usr/lib/galera/libgalera_smm.so
+wsrep_cluster_name="Openstack"
+wsrep_sst_auth=wsrep_sst:wspass
+wsrep_cluster_address="gcomm://{{ hostvars[groups['backendservers'][0]]['ansible_eth0']['ipv4']['address'] }},hostvars[groups['backendservers'][1]]['ansible_eth0']['ipv4']['address']"
+wsrep_sst_method=rsync
+wsrep_node_address="{{ ansible_eth0.ipv4.address }}"
+wsrep_node_name="{{ ansible_hostname }}"
