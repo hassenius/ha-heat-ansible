@@ -53,17 +53,11 @@
 - name: Install rabbitMQ
   apt: name=rabbitmq-server state=installed
   
-- name: Get the masters erlang cookie file
-  slurp: src=/var/lib/rabbitmq/.erlang.cookie
-  register: rabbitmq_erlang_cookie
-  #fetch: dest/tmp/rabbitmq-erlang.cookie src=/var/lib/rabbitmq/.erlang.cookie
-  when: dbrole == 'master'
+- name: Check if RabbitMQ is already clustered
+  stat: path=/etc/rabbitmq/clustered
+  register: rabbit_clustered
   
-- name: Copy masters erlang cookie to slave(s)
-  copy: dest=/var/lib/rabbitmq/.erlang.cookie content="{{rabbitmq_erlang_cookie.content | b64decode}}"
-  when: dbrole == 'slave'
-    
-#- name: Wait for masters erlang cookie file
-  #local_action: wait_for path=/tmp/rabbitmq-erlang.cookie
-  #when: dbrole == 'slave'
+- include: rabbitmq_clustering.yaml
+  when: rabbit_clustered.stat.exists != true
+
   
