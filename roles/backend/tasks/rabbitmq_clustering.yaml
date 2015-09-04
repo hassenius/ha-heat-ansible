@@ -50,7 +50,7 @@
   when: dbrole != 'master'
   
 - name: rabbitmq_clustering | joining rabbitmq cluster
-  command: rabbitmqctl join_cluster 'rabbit@{{ rabbitmq_master }}'
+  command: rabbitmqctl join_cluster 'rabbit@{{ hostvars[groups['backendservers'][0]]['ansible_hostname'] }}'
   register: cluster_joined
   when: dbrole != 'master'
   
