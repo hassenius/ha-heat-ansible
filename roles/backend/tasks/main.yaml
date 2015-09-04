@@ -21,7 +21,7 @@
 
 - name: Generate wsrep config file
   template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf 
-
+### This section probably needs improvement. Look at how the erlang.cookie file is handled below.
 - name: Check if local debian.cnf file already exists
   local_action: stat path=/tmp/debian.cnf
   register: mysql_debconf_done
@@ -32,12 +32,12 @@
   
 - name: Copy masters debian.cnf to slave
   copy: src=/tmp/debian.cnf dest=/etc/mysql/debian.cnf backup=yes
-  #notify: Set mysql sys-maint-password on slave
   when: dbrole == 'slave' and mysql_debconf_done.stat.exists
 
 - name: Set mysql sys-maint-password on slave
   script: roles/backend/files/update-slave-mysql.sh
   when: dbrole == 'slave'
+### consider using when: inventory_hostname == webservers[0] to designate master instead
   
 - name: Stop mysql cluster
   service: name=mysql state=stopped
@@ -50,7 +50,20 @@
   service: name=mysql state=started
   when: dbrole == 'slave'
   
-
-
+- name: Install rabbitMQ
+  apt: name=rabbitmq-server state=installed
   
+- name: Get the masters erlang cookie file
+  slurp: src=/var/lib/rabbitmq/.erlang.cookie
+  register: rabbitmq_erlang_cookie
+  #fetch: dest/tmp/rabbitmq-erlang.cookie src=/var/lib/rabbitmq/.erlang.cookie
+  when: dbrole == 'master'
+  
+- name: Copy masters erlang cookie to slave(s)
+  copy: dest=/var/lib/rabbitmq/.erlang.cookie content="{{rabbitmq_erlang_cookie.content | b64decode}}"
+  when: dbrole == 'slave'
+    
+#- name: Wait for masters erlang cookie file
+  #local_action: wait_for path=/tmp/rabbitmq-erlang.cookie
+  #when: dbrole == 'slave'
   
