@@ -4,56 +4,12 @@
   when: hostvars[item].ansible_default_ipv4.address is defined
   with_items: groups['all']
 
-- name: Prepare system for adding repositories
-  apt: name=software-properties-common state=installed update_cache=yes
-
-- name: Add MariaDB repository key
-  # only valid after ansible 1.6 apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db
-  # complains: apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
-  command: apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db
+- name: Check if mysql is already installed and clustered
+  stat: path=/etc/mysql/clustered
+  register: mysql_clustered
   
-- name: Add MariaDB repositories for Galera packages
-  apt_repository: repo='deb http://mariadb.mirror.nucleus.be//repo/5.5/ubuntu trusty main' state=present update_cache=yes
-
-- name: Install MariaDB and Galera
-  apt: name={{ item }} state=installed 
-  with_items:
-    - mariadb-galera-server 
-    - galera   
-
-- name: Upload custom my.cnf settings
-  copy: src=my-custom.cnf dest=/etc/mysql/conf.d/my-custom.cnf
-
-- name: Generate wsrep config file
-  template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf 
-### This section probably needs improvement. Look at how the erlang.cookie file is handled below.
-- name: Check if local debian.cnf file already exists
-  local_action: stat path=/tmp/debian.cnf
-  register: mysql_debconf_done
-  
-- name: Get masters debian.cnf file
-  fetch: dest=/tmp/debian.cnf src=/etc/mysql/debian.cnf flat=yes
-  when: dbrole == 'master' and not mysql_debconf_done.stat.exists
-  
-- name: Copy masters debian.cnf to slave
-  copy: src=/tmp/debian.cnf dest=/etc/mysql/debian.cnf backup=yes
-  when: dbrole == 'slave' and mysql_debconf_done.stat.exists
-
-- name: Set mysql sys-maint-password on slave
-  script: roles/backend/files/update-slave-mysql.sh
-  when: dbrole == 'slave'
-### consider using when: inventory_hostname == webservers[0] to designate master instead
-  
-- name: Stop mysql cluster
-  service: name=mysql state=stopped
-
-- name: Start master node
-  service: name=mysql state=started args=--wsrep-new-cluster
-  when: dbrole == 'master'
-  
-- name: Start slave node
-  service: name=mysql state=started
-  when: dbrole == 'slave'
+- include: mysql_clustering.yaml
+  when: mysql_clustered.stat.exists != true
   
 - name: Install rabbitMQ
   apt: name=rabbitmq-server state=installed
