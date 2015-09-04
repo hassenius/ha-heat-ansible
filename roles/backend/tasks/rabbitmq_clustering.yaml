@@ -43,6 +43,7 @@
   
 - name: rabbitmq_clustering | stopping rabbitmq app
   command: rabbitmqctl stop_app
+  ignore_errors: yes
   when: dbrole != 'master'
   
 - name: rabbitmq_clustering | resetting rabbitmq app
