@@ -20,7 +20,7 @@
     content: "{{rabbitmq_erlang_cookie.content | b64decode}}"
     owner: rabbitmq
     group: rabbitmq
-    mode: 400
+    mode: 0400
     backup: yes
   when: dbrole == 'slave'
 
