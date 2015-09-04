@@ -1,12 +1,14 @@
 ---
 - name: rabbitmq_clustering | stopping rabbitmq app
   command: rabbitmqctl stop_app
+  ignore_errors: yes
 
 - name: rabbitmq_clustering | resetting rabbitmq app
   command: rabbitmqctl reset
 
 - name: rabbitmq_clustering | stopping rabbitmq-server
   service: name=rabbitmq-server state=stopped
+  ignore_errors: yes
 
 - name: Get the masters erlang cookie file
   slurp: src=/var/lib/rabbitmq/.erlang.cookie
