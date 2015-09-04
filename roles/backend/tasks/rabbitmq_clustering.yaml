@@ -1,5 +1,5 @@
 ---
-  - name: rabbitmq_clustering | stopping rabbitmq app
+- name: rabbitmq_clustering | stopping rabbitmq app
   command: rabbitmqctl stop_app
 
 - name: rabbitmq_clustering | resetting rabbitmq app
