@@ -12,4 +12,4 @@
     - heat-engine
 
 - name: Restart keepalived
-  service: name=keepalived stat=restarted
+  service: name=keepalived state=restarted

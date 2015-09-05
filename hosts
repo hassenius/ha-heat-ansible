@@ -4,7 +4,7 @@ heat_backend2 dbrole=slave
 
 [frontendservers]
 heat_frontend1 primary=yes
-heat_frontend2
+heat_frontend2 primary=no
 
 [common:children]
 backendservers
@@ -12,7 +12,7 @@ frontendservers
 
 [frontendservers:vars]
 heat_endpoint_ip=67.214.209.244
-heat_frontend_vip=10.230.40.106
+heat_frontend_vip=10.230.40.106/24
 backend1=10.230.40.102
 backend2=10.230.40.111
 rabbit_port=5671
