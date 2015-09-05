@@ -31,5 +31,8 @@
   
 - include: rabbitmq_clustering.yaml
   when: rabbit_clustered.stat.exists != true
+  
+- name: Ensure openstack username and password exist or rabbitmq
+  rabbitmq_user: user={{ rabbit_username }} password={{rabbit_password}} configure_priv=.* read_priv=.* write_priv=.* state=present
 
   
