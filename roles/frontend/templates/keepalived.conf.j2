@@ -5,11 +5,9 @@ vrrp_instance vrrp_group_100 {
      priority 100
      vrrp_unicast_bind {{ ansible_eth0.ipv4.address }}
 {% for svr in groups.frontendservers|difference([inventory_hostname]) %}
-  vrrp_unicast_peer {{ hostvars[svr].ansible_default_ipv4.address }}
+     vrrp_unicast_peer {{ hostvars[svr].ansible_default_ipv4.address }}
 {% endfor %}
-     
-     {{ ansible_eth0.ipv4.address }}
-      192.168.1.12   # Internal IP of peer
+    
      authentication {
        auth_type PASS
        auth_pass {{ keepalived_pass }}
