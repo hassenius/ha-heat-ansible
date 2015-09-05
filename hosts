@@ -21,6 +21,7 @@ rabbit_username=openstack
 heat_admin_user=hk-heat
 heat_admin_password=sfT8hkbB5KAs4
 auth_uri="https://icos-sea.openstack.blueboxgrid.com:5001/v2.0"
+keepalived_pass=hDFhl45K0k
 
 [common:vars]
 heat_database_password=KvlNk4N5ihK

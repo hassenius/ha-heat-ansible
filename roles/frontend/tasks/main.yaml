@@ -16,10 +16,17 @@
    - heat-engine
    - python-heatclient
   notify: Restart server
-
+  
 - name: Waiting for server to come back
   local_action: wait_for port=22 host={{ inventory_hostname }}  delay=5
   sudo: false
+
+- name: Install keepalived
+  apt: name=keepalived state=installed
+  
+- name: Configure keepalived
+  template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf
+  notify: Restart keepalived
 
 - name: Copy heat configuration file
   template: src=heat.conf.j2 dest=/etc/heat/heat.conf
@@ -27,7 +34,7 @@
   
 - name: Create necessary heat databases
   command: sudo su -s /bin/sh -c "heat-manage db_sync" heat
-  #when: ansible_hostname  == heat_frontend1
+  when: primary == 'yes'
 
   
 # Install and configure keepalived

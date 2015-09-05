@@ -10,3 +10,6 @@
   with_items:
     - heat-api
     - heat-engine
+
+- name: Restart keepalived
+  service: name=keepalived stat=restarted
