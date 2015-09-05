@@ -1,0 +1,10 @@
+CREATE_PORTS=no
+NETWORK=internal
+NOVA_IMAGE=ubuntu-14.04
+NOVA_FLAVOR=m1.small
+NOVA_KEYNAME=hk_key
+FRONTEND_VIP=10.230.40.96
+heat_frontend1=10.230.40.94
+heat_frontend2=10.230.40.95
+heat_backend1=10.230.40.92
+heat_backend2=10.230.40.93

@@ -11,6 +11,14 @@
 - include: mysql_clustering.yaml
   when: mysql_clustered.stat.exists != true
   
+- name: Make sure heat database exists 
+  mysql_db: name=heat state=present
+  when: dbrole == 'master'
+  
+- name: Make sure heat user exists
+  mysql_user: name=heat password{{ heat_database_password }} host=% priv=heat.*:ALL state=present
+  when: dbrole == 'master'
+  
 - name: Install rabbitMQ
   apt: name=rabbitmq-server state=installed
   

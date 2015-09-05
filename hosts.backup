@@ -1,6 +1,6 @@
 [backendservers]
-heat_backend1=10.230.40.92${heat_backend1} dbrole=master
-heat_backend2=10.230.40.93${heat_backend2} dbrole=slave
+heat_backend1=${heat_backend1} dbrole=master
+heat_backend2=${heat_backend2} dbrole=slave
 
 [frontendservers]
 heat_frontend1
@@ -12,9 +12,9 @@ frontendservers
 
 [frontendservers:vars]
 heat_endpoint_ip=
-heat_frontend_vip=10.230.40.96
-backend1=10.230.40.92
-backend2=10.230.40.93
+heat_frontend_vip=${FRONTEND_VIP}=10.230.40.70
+backend1=${heat_backend1}=10.230.40.65
+backend2=${heat_backend2}=10.230.40.66
 rabbit_port=5671
 rabbit_password=XklV84FksV2
 rabbit_username=openstack

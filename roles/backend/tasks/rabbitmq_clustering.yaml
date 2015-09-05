@@ -60,6 +60,10 @@
 - name: rabbitmq_clustering | starting rabbitmq app
   command: rabbitmqctl start_app
   when: dbrole != 'master'
+
+- name: rabbitmq_clustering | setting ha policy
+  command: rabbitmqctl set_policy ha-all '^(?!amq\.).*' '{"ha-mode": "all"}'
+  when: dbrole == 'master'
   
 - name: rabbitmq_clustering | marking as clustered
   file: path=/etc/rabbitmq/clustered state=touch

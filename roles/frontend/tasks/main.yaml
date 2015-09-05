@@ -1,0 +1,43 @@
+---
+- name: Get ubuntu keyring
+  apt: ubuntu-cloud-keyring state=installed update_cache=yes
+  
+- name: Setup Heat repo
+  apt_repository: repo='http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/juno main' state=present
+  
+- name: Refresh dist
+  apt: upgrade=dist update_cache=yes state=latest
+  
+- name: Install heat packages
+  apt: name={{ item }} state=installed
+  with_items:
+   - heat-api
+   - heat-api-cfn
+   - heat-engine
+   - python-heatclient
+  notify: Restart server
+
+- name: Waiting for server to come back
+  local_action: wait_for host={{ inventory_hostname }}
+                state=started
+  sudo: false
+
+## Now configure
+- name: Copy heat configuration file
+  template: src=heat.conf.j2 dest=/etc/heat/heat.conf
+  
+- name: Create heat user in keystone
+  keystone_user: user={{ heat_admin_user }}  tenant=service password={{ heat_admin_password }} role=admin state=present
+  
+- name: Create heat roles
+  keystone_user: role={{ item }} state=present
+  with_items:
+    - heat_stack_user
+    - heat_stack_owner
+
+- name: Create necessary heat databases
+  command: sudo su -s /bin/sh -c "heat-manage db_sync" heat
+  when: inventory_hostname == frontendservers[0]
+  
+# Install and configure keepalived
+# then the only remainding point is to update the keystone catalog

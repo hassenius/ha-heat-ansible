@@ -5,4 +5,8 @@
   sudo: yes
   roles:
   - backend
-  
+
+- hosts: frontendservers
+  sudo: yes
+  roles:
+  - frontend  

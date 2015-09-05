@@ -1,0 +1,5 @@
+CREATE_PORTS=yes
+NETWORK=internal
+NOVA_IMAGE=ubuntu-14.04
+NOVA_FLAVOR=m1.small
+NOVA_KEYNAME=hk_key

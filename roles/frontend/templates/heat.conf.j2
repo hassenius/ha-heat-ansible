@@ -1,0 +1,18 @@
+[DEFAULT]
+heat_metadata_server_url=http://{{ heat_endpoint_ip }}:8000
+heat_waitcondition_server_url=http://{{ heat_endpoint_ip }}:8000/v1/waitcondition
+rpc_backend=rabbit
+rabbit_hosts={{backend1}}:{{rabbit_port}},{{backend2}}:{{rabbit_port}}
+rabbit_password={{rabbit_password}}
+rabbit_userid={{rabbit_username}}
+verbose=false
+log_dir=/var/log/heat
+[database]
+connection=mysql://heat:{{heat_database_password}}@b{{backend1}}/heat
+slave_connection=mysql://heat:{{heat_database_password}}@{{backend2}}/heat
+[keystone_authtoken]
+auth_uri={{auth_uri}}
+identity_uri={{auth_uri}}
+admin_tenant_name=service
+admin_user={{heat_admin_user}}
+admin_password={{ heat_admin_password }}
