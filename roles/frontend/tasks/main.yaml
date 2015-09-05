@@ -1,6 +1,6 @@
 ---
 - name: Get ubuntu keyring
-  apt: ubuntu-cloud-keyring state=installed update_cache=yes
+  apt: name=ubuntu-cloud-keyring state=installed update_cache=yes
   
 - name: Setup Heat repo
   apt_repository: repo='http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/juno main' state=present
