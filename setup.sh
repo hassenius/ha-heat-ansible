@@ -108,7 +108,7 @@ do
 done
 
 echo " * Creating heat service user and roles..."
-if [[ $(openstack user list | grep ${HEAT_ADMIN_USER}) ]]
+if [[ $(openstack --quiet user list | grep ${HEAT_ADMIN_USER}) ]]
 then
   echo "Warning: User ${HEAT_ADMIN_USER} already exists in keystone user list"
   echo "Continuing, but something may have gone wrong"
@@ -117,7 +117,7 @@ else
   keystone user-role-add --user ${HEAT_ADMIN_USER} --tenant service --role admin
 fi
 
-if [[ $(openstack role list | grep 'heat_stack_owner\|heat_stack_user') ]]
+if [[ $(openstack --quiet role list | grep 'heat_stack_owner\|heat_stack_user') ]]
 then
   echo "Warning: role heat_stack_owner and/or heat_stack_user already exists."
   echo "Continuing, but something may have gone wrong"
