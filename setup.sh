@@ -29,8 +29,14 @@ then
     echo " * Creating neutron port ${name}: "
     neutron port-create ${NETWORK} --name ${name} -c fixed_ips -f value
   done
+  
+  echo "Creating Floating IP: "
+  VIP_PORT=$(neutron port-show heat_frontendvip -c id -f value)
+  FLOATING_IP=$(neutron floatingip-create $FLOATING_NET --port-id $VIP_PORT -c floating_ip_address -f value)
+  echo "Associated IP: ${FLOATING_IP}"
   # Update the config
   sed -i.port-bak 's/CREATE_PORTS=yes/CREATE_PORTS=no/g' networkrc
+  echo "FLOATING_IP=${FLOATING_IP}" >> networkrc
 fi
 
 # If frontend VIP is not set, assume neutron port setup needs to be done
@@ -128,10 +134,23 @@ echo "Adding heat roles"
   keystone role-create --name heat_stack_user
 fi
 
+if ["$1" == "update-ips"]
+then
+  echo "updating the ip configuration files"
+  for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2
+  do
+    port_ip=$(neutron port-show ${name} | awk -F ":" '/ip_address/ { print $3 }' | tr -dc '0-9.')
+    sed -i "s/^${name}=[0-9\.]*"/${name}=${port_ip}/g" networkrc
+    echo "${name}=${port_ip}" >> networkrc
+  done
+  source networkrc
+fi
+
 # Update ansible hosts file
 sed -i "s/heat_frontend_vip=[0-9\.]*/heat_frontend_vip=${FRONTEND_VIP}/g" hosts
 sed -i "s/backend1=[0-9\.]*/backend1=${heat_backend1}/g" hosts
 sed -i "s/backend2=[0-9\.]*/backend2=${heat_backend2}/g" hosts
+sed -i "s/heat_endpoint_ip=[0-9\.]*/heat_endpoint_ip=${FLOATING_IP}/g" hosts
 
 echo "Please verify ./hosts"
 # Update hosts file
