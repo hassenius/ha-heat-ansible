@@ -140,6 +140,6 @@ do
 done
 
 echo "After verifying, please run:"
-echo "ansible -i ./hosts -"
+echo "ansible-playbook -i ./hosts site.yaml"
 
 
