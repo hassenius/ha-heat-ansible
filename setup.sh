@@ -107,14 +107,39 @@ do
 
 done
 
+echo " * Creating heat service user and roles..."
+if [[ $(openstack user list | grep ${HEAT_ADMIN_USER}) ]]
+then
+  echo "Warning: User ${HEAT_ADMIN_USER} already exists in keystone user list"
+  echo "Continuing, but something may have gone wrong"
+else
+  keystone user-create --name ${HEAT_ADMIN_USER} --pass ${HEAT_ADMIN_PASSWORD}
+  keystone user-role-add --user ${HEAT_ADMIN_USER} --tenant service --role admin
+fi
+
+if [[ $(openstack role list | grep 'heat_stack_owner\|heat_stack_user') ]]
+then
+  echo "Warning: role heat_stack_owner and/or heat_stack_user already exists."
+  echo "Continuing, but something may have gone wrong"
+else
+  keystone role-create --name heat_stack_owner
+  keystone role-create --name heat_stack_user
+fi
+
 # Update ansible hosts file
 sed -i "s/heat_frontend_vip=[0-9\.]*/heat_frontend_vip=${FRONTEND_VIP}/g" hosts
 sed -i "s/backend1=[0-9\.]*/backend1=${heat_backend1}/g" hosts
 sed -i "s/backend2=[0-9\.]*/backend2=${heat_backend2}/g" hosts
 
+echo "Please verify ./hosts"
 # Update hosts file
 echo "You'll need to manually verify that /etc/hosts includes the following entries: "
 for host in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2 
 do
   echo "${!host} ${host}"
 done
+
+echo "After verifying, please run:"
+echo "ansible -i ./hosts -"
+
+
