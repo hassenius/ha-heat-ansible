@@ -14,7 +14,8 @@
   apt: name={{ item }} state=installed 
   with_items:
     - mariadb-galera-server 
-    - galera   
+    - galera 
+    - python-mysqldb  
 
 - name: Upload custom my.cnf settings
   copy: src=my-custom.cnf dest=/etc/mysql/conf.d/my-custom.cnf
