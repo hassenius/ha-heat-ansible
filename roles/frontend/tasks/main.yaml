@@ -57,6 +57,7 @@
 # Workaround because local_action keystone_user won't play along
 - name: Check that keystone user and role is created
   local_action: command ./setup-keystone-users.sh {{ heat_admin_user }} {{ heat_admin_password }}
+  when: inventory_hostname == frontendservers[0]
   
 
 - name: Create necessary heat databases
