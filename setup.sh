@@ -37,6 +37,15 @@ then
   # Update the config
   sed -i.port-bak 's/CREATE_PORTS=yes/CREATE_PORTS=no/g' networkrc
   echo "FLOATING_IP=${FLOATING_IP}" >> networkrc
+  
+  echo "Creating security group heat"
+  SEC_GROUP=$(neutron security-group-create Heat -c id -f value)
+  
+  echo "Activating security groups on heat servers"
+  for name in heat_frontend1 heat_frontend2 heat_frontendvip
+  do
+    neutron port-update $name --security-group $SEC_GROUP
+  done
 fi
 
 # If frontend VIP is not set, assume neutron port setup needs to be done
