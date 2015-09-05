@@ -18,7 +18,7 @@ backend2=10.230.40.111
 rabbit_port=5672
 heat_admin_user=hk-heat
 heat_admin_password=sfT8hkbB5KAs4
-auth_uri="https://icos-sea.openstack.blueboxgrid.com:5001"
+auth_uri="https://icos-sea.openstack.blueboxgrid.com:5001" 
 keepalived_pass=hDFhl45K0k
 
 [common:vars]

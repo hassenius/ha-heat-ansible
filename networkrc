@@ -1,17 +1,14 @@
-CREATE_PORTS=no
-UPDATE_KEYSTONE_CATALOG=yes # change to yes when you're ready to update catalog
-HEAT_ADMIN_USER=hk-heat
+CREATE_PORTS=yes
+# Change update_keystone_catalog to yes when you're ready to update catalog
+UPDATE_KEYSTONE_CATALOG=no 
+# heat admin user and password also has to be edited in hosts file
+HEAT_ADMIN_USER=heat
 HEAT_ADMIN_PASSWORD=sfT8hkbB5KAs4
+
 NETWORK=internal
 FLOATING_NET=external
 REGION=RegionOne
 NOVA_IMAGE=ubuntu-14.04
-NOVA_FLAVOR=m1.small
-NOVA_KEYNAME=hk_key
+NOVA_FLAVOR=m1.medium
+NOVA_KEYNAME=heat_key
 # Everything below here is dynamically added
-FLOATING_IP=67.214.209.244
-FRONTEND_VIP=10.230.40.101
-heat_frontend1=10.230.40.99
-heat_frontend2=10.230.40.100
-heat_backend1=10.230.40.97
-heat_backend2=10.230.40.98

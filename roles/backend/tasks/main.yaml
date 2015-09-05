@@ -34,5 +34,6 @@
   
 - name: Ensure openstack username and password exist or rabbitmq
   rabbitmq_user: user={{ rabbit_username }} password={{rabbit_password}} configure_priv=.* read_priv=.* write_priv=.* state=present
+  when: dbrole == 'master'
 
   
