@@ -28,7 +28,7 @@
   notify: Restart heat services
   
 - name: Create heat user in keystone
-  keystone_user: user={{ heat_admin_user }}  tenant=service password={{ heat_admin_password }} role=admin state=present
+  local_action: keystone_user user={{ heat_admin_user }}  tenant=service password={{ heat_admin_password }} role=admin state=present
   
 - name: Create heat roles
   keystone_user: role={{ item }} state=present
