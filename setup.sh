@@ -24,7 +24,7 @@ fi
 if [[ "${CREATE_PORTS}" == "yes" ]]
 then
   # Create the neutron ports
-  for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2 heat_frontendvip
+  for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2 
   do
     echo " * Creating neutron port ${name}: "
     neutron port-create ${NETWORK} --name ${name} -c fixed_ips -f value
@@ -113,6 +113,7 @@ then
   echo "Warning: User ${HEAT_ADMIN_USER} already exists in keystone user list"
   echo "Continuing, but something may have gone wrong"
 else
+  echo "Adding user ${HEAT_ADMIN_USER}"
   keystone user-create --name ${HEAT_ADMIN_USER} --pass ${HEAT_ADMIN_PASSWORD}
   keystone user-role-add --user ${HEAT_ADMIN_USER} --tenant service --role admin
 fi
@@ -122,6 +123,7 @@ then
   echo "Warning: role heat_stack_owner and/or heat_stack_user already exists."
   echo "Continuing, but something may have gone wrong"
 else
+echo "Adding heat roles"
   keystone role-create --name heat_stack_owner
   keystone role-create --name heat_stack_user
 fi
