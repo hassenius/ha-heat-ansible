@@ -22,6 +22,9 @@
 - name: Install rabbitMQ
   apt: name=rabbitmq-server state=installed
   
+- name: Make sure rabbitMQ is runing
+  service: name=rabbitmq-server state=started enabled=yes
+  
 - name: Check if RabbitMQ is already clustered
   stat: path=/etc/rabbitmq/clustered
   register: rabbit_clustered
