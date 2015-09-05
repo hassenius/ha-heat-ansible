@@ -18,8 +18,7 @@
   notify: Restart server
 
 - name: Waiting for server to come back
-  local_action: wait_for host={{ inventory_hostname }}
-                state=started
+  local_action: wait_for port=22 host={{ inventory_hostname }}  delay=5
   sudo: false
 
 ## Now configure
@@ -29,6 +28,7 @@
   
 - name: Create heat user in keystone
   local_action: keystone_user user={{ heat_admin_user }}  tenant=service password={{ heat_admin_password }} role=admin state=present
+  sudo: false
   
 - name: Create heat roles
   keystone_user: role={{ item }} state=present
