@@ -26,33 +26,37 @@
   template: src=heat.conf.j2 dest=/etc/heat/heat.conf
   notify: Restart heat services
   
-- name: Create heat user in keystone
-  #local_action: keystone_user user={{ heat_admin_user }}  tenant=service password={{ heat_admin_password }} role=admin state=present endpoint={{ os_auth_endpoint }} login_password={{ os_login_password }} login_user={{ os_login_user }} login_tenant_name={{ os_login_tenant }}
-  local_action: keystone_user 
-    user: "{{ heat_admin_user }}"
-    tenant: service
-    password: "{{ heat_admin_password }}"
-    role: admin
-    endpoint: "{{ lookup('env', 'OS_AUTH_URL') }}"
-    login_password: "{{ lookup('env', 'OS_PASSWORD') }}"
-    login_user: "{{ lookup('env', 'OS_USERNAME') }}"
-    login_tenant_name: "{{ lookup('env', 'OS_TENANT_NAME') }}"
-  sudo: false
-  when: inventory_hostname == frontendservers[0]
+#- name: Create heat user in keystone
+ # #local_action: keystone_user user={{ heat_admin_user }}  tenant=service password={{ heat_admin_password }} role=admin state=present endpoint={{ os_auth_endpoint }} login_password={{ os_login_password }} login_user={{ os_login_user }} login_tenant_name={{ os_login_tenant }}
+ # local_action: keystone_user 
+ #   user: "{{ heat_admin_user }}"
+ #   tenant: service
+ #   password: "{{ heat_admin_password }}"
+ #   role: admin
+ #   endpoint: "{{ lookup('env', 'OS_AUTH_URL') }}"
+ #   login_password: "{{ lookup('env', 'OS_PASSWORD') }}"
+ #   login_user: "{{ lookup('env', 'OS_USERNAME') }}"
+ #   login_tenant_name: "{{ lookup('env', 'OS_TENANT_NAME') }}"
+ # sudo: false
+ # when: inventory_hostname == frontendservers[0]
   
-- name: Create heat roles
-  local_action: keystone_user 
-    role: "{{ item }}"
-    state: present 
-    endpoint: "{{ lookup('env', 'OS_AUTH_URL') }}"
-    login_password: "{{ lookup('env', 'OS_PASSWORD') }}"
-    login_user: "{{ lookup('env', 'OS_USERNAME') }}"
-    login_tenant_name: "{{ lookup('env', 'OS_TENANT_NAME') }}"
-  with_items:
-    - heat_stack_user
-    - heat_stack_owner
-  sudo: false
-  when: inventory_hostname == frontendservers[0]
+#- name: Create heat roles
+#  local_action: keystone_user 
+#    role: "{{ item }}"
+#    state: present 
+#    endpoint: "{{ lookup('env', 'OS_AUTH_URL') }}"
+#    login_password: "{{ lookup('env', 'OS_PASSWORD') }}"
+#    login_user: "{{ lookup('env', 'OS_USERNAME') }}"
+#    login_tenant_name: "{{ lookup('env', 'OS_TENANT_NAME') }}"
+#  with_items:
+#    - heat_stack_user
+#    - heat_stack_owner
+#  sudo: false
+#  when: inventory_hostname == frontendservers[0]
+ 
+# Workaround because local_action keystone_user won't play along
+- name: Check that keystone user and role is created
+  local_action: command ./setup-keystone-users.sh {{ heat_admin_user }} {{ heat_admin_password }}
   
 
 - name: Create necessary heat databases
