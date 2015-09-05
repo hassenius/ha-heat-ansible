@@ -1,9 +1,9 @@
 [backendservers]
-heat_backend1=10.230.40.97${heat_backend1} dbrole=master
-heat_backend2=10.230.40.98${heat_backend2} dbrole=slave
+heat_backend1 dbrole=master
+heat_backend2 dbrole=slave
 
 [frontendservers]
-heat_frontend1
+heat_frontend1 primary=yes
 heat_frontend2
 
 [common:children]
@@ -11,22 +11,16 @@ backendservers
 frontendservers
 
 [frontendservers:vars]
-heat_endpoint_ip=
-heat_frontend_vip=10.230.40.101
-backend1=10.230.40.97
-backend2=10.230.40.98
+heat_endpoint_ip=67.214.209.244
+heat_frontend_vip=10.230.40.106
+backend1=10.230.40.102
+backend2=10.230.40.111
 rabbit_port=5671
 rabbit_password=XklV84FksV2
 rabbit_username=openstack
 heat_admin_user=hk-heat
 heat_admin_password=sfT8hkbB5KAs4
-auth_uri=
-
-os_auth_endpoint: "{{ lookup('env', 'OS_AUTH_URL') }}"
-os_login_password: "{{ lookup('env', 'OS_PASSWORD') }}"
-os_tenant_name: "{{ lookup('env', 'OS_TENANT_NAME') }}"
-os_login_user: "{{ lookup('env', 'OS_USERNAME') }}"
-
+auth_uri="https://icos-sea.openstack.blueboxgrid.com:5001/v2.0"
 
 [common:vars]
 heat_database_password=KvlNk4N5ihK
