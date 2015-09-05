@@ -8,7 +8,7 @@ rabbit_userid={{rabbit_username}}
 verbose=false
 log_dir=/var/log/heat
 [database]
-connection=mysql://heat:{{heat_database_password}}@b{{backend1}}/heat
+connection=mysql://heat:{{heat_database_password}}@{{backend1}}/heat
 slave_connection=mysql://heat:{{heat_database_password}}@{{backend2}}/heat
 [keystone_authtoken]
 auth_uri={{auth_uri}}
