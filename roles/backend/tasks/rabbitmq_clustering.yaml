@@ -14,7 +14,7 @@
   slurp: src=/var/lib/rabbitmq/.erlang.cookie
   register: rabbitmq_erlang_cookie
   #fetch: dest/tmp/rabbitmq-erlang.cookie src=/var/lib/rabbitmq/.erlang.cookie
-  delegate_to: dbmaster
+  delegate_to: heat_backend1
   
 - name: Copy masters erlang cookie to slave(s)
   copy: 
