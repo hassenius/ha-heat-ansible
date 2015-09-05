@@ -16,7 +16,7 @@
   when: dbrole == 'master'
   
 - name: Make sure heat user exists
-  mysql_user: name=heat password{{ heat_database_password }} host=% priv=heat.*:ALL state=present
+  mysql_user: name=heat password{{ heat_database_password }} host="%" priv="heat.*:ALL" state=present
   when: dbrole == 'master'
   
 - name: Install rabbitMQ
