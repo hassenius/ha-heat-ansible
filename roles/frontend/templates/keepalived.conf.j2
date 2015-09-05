@@ -2,7 +2,11 @@ vrrp_instance vrrp_group_100 {
      state MASTER
      interface eth0
      virtual_router_id 100
+{% if primary == 'yes' %}
      priority 100
+{% else %}
+     priority 99
+{% endif %}
      vrrp_unicast_bind {{ ansible_eth0.ipv4.address }}
 {% for svr in groups.frontendservers|difference([inventory_hostname]) %}
      vrrp_unicast_peer {{ hostvars[svr].ansible_default_ipv4.address }}
