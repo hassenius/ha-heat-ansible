@@ -27,7 +27,7 @@
   
 - name: Create necessary heat databases
   command: sudo su -s /bin/sh -c "heat-manage db_sync" heat
-  when: "{{ inventory_hostname }}" == "{{frontendservers[0] }}"
+  when: inventory_hostname  == heat_frontend1
 
   
 # Install and configure keepalived
