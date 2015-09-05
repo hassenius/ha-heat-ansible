@@ -140,7 +140,7 @@ then
   for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2
   do
     port_ip=$(neutron port-show ${name} | awk -F ":" '/ip_address/ { print $3 }' | tr -dc '0-9.')
-    sed -i "s/^${name}=[0-9\.]*"/${name}=${port_ip}/g" networkrc
+    sed -i "s/^${name}=[0-9\.]*/${name}=${port_ip}/g" networkrc
     echo "${name}=${port_ip}" >> networkrc
   done
   source networkrc
