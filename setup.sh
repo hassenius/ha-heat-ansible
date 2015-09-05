@@ -134,7 +134,7 @@ echo "Adding heat roles"
   keystone role-create --name heat_stack_user
 fi
 
-if ["$1" == "update-ips"]
+if [ "$1" == "update-ips" ]
 then
   echo "updating the ip configuration files"
   for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2
