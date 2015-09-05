@@ -4,3 +4,4 @@ binlog_format=ROW
 default_storage_engine=innodb
 innodb_autoinc_lock_mode=2
 innodb_doublewrite=1
+bind-address=0.0.0.0
