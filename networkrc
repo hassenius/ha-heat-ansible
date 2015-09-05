@@ -1,10 +1,10 @@
 CREATE_PORTS=no
-UPDATE_KEYSTONE_CATALOG=no # change to yes when you're ready to update catalog
+UPDATE_KEYSTONE_CATALOG=yes # change to yes when you're ready to update catalog
 HEAT_ADMIN_USER=hk-heat
 HEAT_ADMIN_PASSWORD=sfT8hkbB5KAs4
 NETWORK=internal
 FLOATING_NET=external
-REGION=regionOne
+REGION=RegionOne
 NOVA_IMAGE=ubuntu-14.04
 NOVA_FLAVOR=m1.small
 NOVA_KEYNAME=hk_key
