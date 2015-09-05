@@ -21,14 +21,13 @@
   local_action: wait_for port=22 host={{ inventory_hostname }}  delay=5
   sudo: false
 
-## Now configure
 - name: Copy heat configuration file
   template: src=heat.conf.j2 dest=/etc/heat/heat.conf
   notify: Restart heat services
   
 - name: Create necessary heat databases
   command: sudo su -s /bin/sh -c "heat-manage db_sync" heat
-  when: inventory_hostname == frontendservers[0]
+  when: "{{ inventory_hostname }}" == "{{frontendservers[0] }}"
 
   
 # Install and configure keepalived
