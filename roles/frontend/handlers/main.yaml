@@ -4,3 +4,9 @@
   async: 0
   poll: 0
   ignore_errors: true
+  
+- name: Restart heat services
+  service: name={{ item }} state=restarted
+  with_items:
+    - heat-api
+    - heat-engine

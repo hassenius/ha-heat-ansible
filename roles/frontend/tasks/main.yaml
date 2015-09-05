@@ -25,6 +25,7 @@
 ## Now configure
 - name: Copy heat configuration file
   template: src=heat.conf.j2 dest=/etc/heat/heat.conf
+  notify: Restart heat services
   
 - name: Create heat user in keystone
   keystone_user: user={{ heat_admin_user }}  tenant=service password={{ heat_admin_password }} role=admin state=present
@@ -38,6 +39,7 @@
 - name: Create necessary heat databases
   command: sudo su -s /bin/sh -c "heat-manage db_sync" heat
   when: inventory_hostname == frontendservers[0]
+
   
 # Install and configure keepalived
 # then the only remainding point is to update the keystone catalog
