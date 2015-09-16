@@ -25,3 +25,6 @@ keepalived_pass=hDFhl45K0k
 heat_database_password=KvlNk4N5ihK
 rabbit_password=XklV84FksV2
 rabbit_username=openstack
+
+##TODO: update /etc/hosts file so sudo doesn't complain
+##     update so all hosts are in the file
