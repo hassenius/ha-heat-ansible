@@ -20,6 +20,9 @@
 - name: Upload custom my.cnf settings
   copy: src=my-custom.cnf dest=/etc/mysql/conf.d/my-custom.cnf
 
+- name: Upload tuning.cnf settings
+  copy: src=tuning.cnf dest=/etc/mysql/conf.d/tuning.cnf
+
 - name: Generate wsrep config file
   template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf 
 ### This section probably needs improvement. Look at how the erlang.cookie file is handled below.
