@@ -24,15 +24,16 @@ fi
 if [[ "${CREATE_PORTS}" == "yes" ]]
 then
   # Create the neutron ports
-  for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2 
+  for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2 heat_frontendvip
   do
     echo " * Creating neutron port ${name}: "
-    neutron port-create ${NETWORK} --name ${name} -c fixed_ips -f value
+    neutron --quiet port-create ${NETWORK} --name ${name} -c fixed_ips -f value
   done
   
   echo "Creating Floating IP: "
-  VIP_PORT=$(neutron port-show heat_frontendvip -c id -f value)
-  FLOATING_IP=$(neutron floatingip-create $FLOATING_NET --port-id $VIP_PORT -c floating_ip_address -f value)
+  VIP_PORT=$(neutron --quiet port-show heat_frontendvip -c id -f value)
+  FLOATING_IP=$(neutron --quiet floatingip-create $FLOATING_NET --port-id $VIP_PORT -c floating_ip_address -f value)
+  ## TODO: FLOATING_IP also picks up created. need to 2>/dev/null it
   echo "Associated IP: ${FLOATING_IP}"
   # Update the config
   sed -i.port-bak 's/CREATE_PORTS=yes/CREATE_PORTS=no/g' networkrc
@@ -47,6 +48,9 @@ then
     neutron port-update $name --security-group $SEC_GROUP
   done
 fi
+## TODO: create security group rules and add rule to them
+
+
 
 # If frontend VIP is not set, assume neutron port setup needs to be done
 if [[ -z "${FRONTEND_VIP}" ]]
