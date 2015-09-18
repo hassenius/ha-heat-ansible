@@ -4,9 +4,10 @@
 - hosts: backendservers
   sudo: yes
   roles:
-  - backend
+  - rabbitmq
+  - mysql
 
 - hosts: frontendservers
   sudo: yes
   roles:
-  - frontend  
+  - heat

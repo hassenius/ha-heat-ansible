@@ -1,0 +1,18 @@
+---
+- name: Install rabbitMQ
+  apt: name=rabbitmq-server state=installed
+  
+- name: Make sure rabbitMQ is runing
+  service: name=rabbitmq-server state=started enabled=yes
+  
+- name: Check if RabbitMQ is already clustered
+  stat: path=/etc/rabbitmq/clustered
+  register: rabbit_clustered
+  
+- include: rabbitmq_clustering.yaml
+  when: rabbit_clustered.stat.exists != true
+  
+- name: Ensure openstack username and password exist or rabbitmq
+  rabbitmq_user: user={{ rabbit_username }} password={{rabbit_password}} configure_priv=.* read_priv=.* write_priv=.* state=present
+  when: dbrole == 'master'
+
