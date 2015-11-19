@@ -122,7 +122,7 @@ do
   portid=$(neutron port-show ${server} -c id -f value)
   echo -n " * Building server ${server}: "
   openstack --quiet server create ${server} --flavor ${NOVA_FLAVOR} --image "${NOVA_IMAGE}" --nic port-id=$portid --key-name ${NOVA_KEYNAME} ${scheduler_hint} -c status -f value
-  unset $scheduler_hint
+  unset scheduler_hint
 
 done
 
