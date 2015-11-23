@@ -160,10 +160,10 @@ then
 fi
 
 # Update ansible hosts file
-sed -i "s/heat_frontend_vip=[0-9\.]*/heat_frontend_vip=${FRONTEND_VIP}/g" hosts
-sed -i "s/backend1=[0-9\.]*/backend1=${heatbackend1}/g" hosts
-sed -i "s/backend2=[0-9\.]*/backend2=${heatbackend2}/g" hosts
-sed -i "s/heat_endpoint_ip=[0-9\.]*/heat_endpoint_ip=${FLOATING_IP}/g" hosts
+sed -i "s/heat_frontend_vip:\"[0-9\.]*\"/heat_frontend_vip:\"${FRONTEND_VIP}\"/g" group_vars/frontendservers
+sed -i "s/backend1:\"[0-9\.]*\"/backend1:\"${heatbackend1}\"/g" group_vars/frontendservers
+sed -i "s/backend2:\"[0-9\.]*\"/backend2:"${heatbackend2}"/g" group_vars/frontendservers
+sed -i "s/heat_endpoint_ip:\"[0-9\.]*\"/heat_endpoint_ip:\"${FLOATING_IP}\"/g" group_vars/frontendservers
 
 echo "Please verify ./hosts"
 # Update hosts file
