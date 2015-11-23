@@ -24,7 +24,7 @@ fi
 if [[ "${CREATE_PORTS}" == "yes" ]]
 then
   # Create the neutron ports
-  for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2 heat_frontendvip
+  for name in heatbackend1 heatbackend2 heatfrontend1 heatfrontend2 heat_frontendvip
   do
     echo " * Creating neutron port ${name}: "
     neutron --quiet port-create ${NETWORK} --name ${name} -c fixed_ips -f value
@@ -43,7 +43,7 @@ then
   SEC_GROUP=$(neutron security-group-create Heat -c id -f value)
   
   echo "Activating security groups on heat servers"
-  for name in heat_frontend1 heat_frontend2 heat_frontendvip
+  for name in heatfrontend1 heatfrontend2 heat_frontendvip
   do
     neutron port-update $name --security-group $SEC_GROUP
   done
@@ -61,16 +61,16 @@ then
   echo "FRONTEND_VIP=${FRONTEND_VIP}" >> networkrc
 
   # Set allowed address pairs for frontend ports to allow them use the VIP
-  for name in heat_frontend1 heat_frontend2
+  for name in heatfrontend1 heatfrontend2
   do
     port_ip=$(neutron port-show ${name} | awk -F ":" '/ip_address/ { print $3 }' | tr -dc '0-9.')
     echo " * Updating Neutron port ${name} to allow own ip ${port_ip} and vip ${FRONTEND_VIP}"
     neutron port-update ${name} --allowed_address_pairs list=true type=dict ip_address=${port_ip} ip_address=${FRONTEND_VIP}
-    echo "${name}=${port_ip}" >> networkrc
+    echo "${name}=${port_ip}" >> networkrc 
   done
   
-  # Add the back-end servers
-  for name in heat_backend1 heat_backend2
+  # Add the back-end servers to networkrc
+  for name in heatbackend1 heatbackend2
   do
     port_ip=$(neutron port-show ${name} | awk -F ":" '/ip_address/ { print $3 }' | tr -dc '0-9.')
     echo "${name}=${port_ip}" >> networkrc
@@ -83,7 +83,7 @@ fi
 
 
 ## Create servers
-for server in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2
+for server in heatbackend1 heatbackend2 heatfrontend1 heatfrontend2
 do
   set +e
   echo " * Checking if ${server} already exists"
@@ -104,17 +104,17 @@ do
     fi
   fi
   
-  if [ "${server}" == "heat_backend2" ]
+  if [ "${server}" == "heatbackend2" ]
   then
-    # We need to set scheduler hints to get different hypervisor from heat_backend1
-    echo "Anti-colocation with heat_backend1 to be implemented..."
+    # We need to set scheduler hints to get different hypervisor from heatbackend1
+    echo "Anti-colocation with heatbackend1 to be implemented..."
     scheduler_hint=""
   fi
   
-  if [ "${server}" == "heat_frontend2" ]
+  if [ "${server}" == "heatfrontend2" ]
   then
-    # We need to set scheduler hints to get different hypervisor from heat_backend1
-    echo "Anti-colocation with heat_frontend1 to be implemented"
+    # We need to set scheduler hints to get different hypervisor from heatbackend1
+    echo "Anti-colocation with heatfrontend1 to be implemented"
     scheduler_hint=""
   fi
   
@@ -150,7 +150,7 @@ fi
 if [ "$1" == "update-ips" ]
 then
   echo "updating the ip configuration files"
-  for name in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2
+  for name in heatbackend1 heatbackend2 heatfrontend1 heatfrontend2
   do
     port_ip=$(neutron port-show ${name} | awk -F ":" '/ip_address/ { print $3 }' | tr -dc '0-9.')
     sed -i "s/^${name}=[0-9\.]*/${name}=${port_ip}/g" networkrc
@@ -161,14 +161,14 @@ fi
 
 # Update ansible hosts file
 sed -i "s/heat_frontend_vip=[0-9\.]*/heat_frontend_vip=${FRONTEND_VIP}/g" hosts
-sed -i "s/backend1=[0-9\.]*/backend1=${heat_backend1}/g" hosts
-sed -i "s/backend2=[0-9\.]*/backend2=${heat_backend2}/g" hosts
+sed -i "s/backend1=[0-9\.]*/backend1=${heatbackend1}/g" hosts
+sed -i "s/backend2=[0-9\.]*/backend2=${heatbackend2}/g" hosts
 sed -i "s/heat_endpoint_ip=[0-9\.]*/heat_endpoint_ip=${FLOATING_IP}/g" hosts
 
 echo "Please verify ./hosts"
 # Update hosts file
 echo "You'll need to manually verify that /etc/hosts includes the following entries: "
-for host in heat_backend1 heat_backend2 heat_frontend1 heat_frontend2 
+for host in heatbackend1 heatbackend2 heatfrontend1 heatfrontend2 
 do
   echo "${!host} ${host}"
 done
