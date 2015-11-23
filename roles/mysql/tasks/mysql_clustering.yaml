@@ -39,7 +39,7 @@
   when: dbrole == 'slave' and mysql_debconf_done.stat.exists
 
 - name: Set mysql sys-maint-password on slave
-  script: roles/backend/files/update-slave-mysql.sh
+  script: update-slave-mysql.sh
   when: dbrole == 'slave'
 ### consider using when: inventory_hostname == webservers[0] to designate master instead
   
